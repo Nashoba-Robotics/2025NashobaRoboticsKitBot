@@ -55,7 +55,7 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        drive = new Drive(new DriveIOTalonSRX(), new GyroIOPigeon2());
+        drive = new Drive(new DriveIOTalonSRX(), new GyroIO() {});
         roller = new Roller(new RollerIOTalonSRX());
         break;
 

@@ -28,9 +28,7 @@ public class DriveIOTalonSRX implements DriveIO {
   private static final double tickPerRevolution = 1440;
 
   private final TalonSRX leftLeader = new TalonSRX(leftLeaderCanId);
-  private final TalonSRX leftFollower = new TalonSRX(leftFollowerCanId);
   private final TalonSRX rightLeader = new TalonSRX(rightLeaderCanId);
-  private final TalonSRX rightFollower = new TalonSRX(rightFollowerCanId);
 
   public DriveIOTalonSRX() {
     var config = new TalonSRXConfiguration();
@@ -41,15 +39,10 @@ public class DriveIOTalonSRX implements DriveIO {
     config.primaryPID.selectedFeedbackSensor = FeedbackDevice.QuadEncoder;
 
     tryUntilOkV5(5, () -> leftLeader.configAllSettings(config));
-    tryUntilOkV5(5, () -> leftFollower.configAllSettings(config));
     tryUntilOkV5(5, () -> rightLeader.configAllSettings(config));
-    tryUntilOkV5(5, () -> rightFollower.configAllSettings(config));
 
     leftLeader.setInverted(leftInverted);
     rightLeader.setInverted(rightInverted);
-
-    leftFollower.follow(leftLeader);
-    rightFollower.follow(rightLeader);
   }
 
   @Override
@@ -63,7 +56,7 @@ public class DriveIOTalonSRX implements DriveIO {
                 * 10.0); // Raw units are ticks per 100ms :(
     inputs.leftAppliedVolts = leftLeader.getMotorOutputVoltage();
     inputs.leftCurrentAmps =
-        new double[] {leftLeader.getStatorCurrent(), leftFollower.getStatorCurrent()};
+        new double[] {leftLeader.getStatorCurrent()};
 
     inputs.rightPositionRad =
         Units.rotationsToRadians(rightLeader.getSelectedSensorPosition() / tickPerRevolution);
@@ -74,7 +67,7 @@ public class DriveIOTalonSRX implements DriveIO {
                 * 10.0); // Raw units are ticks per 100ms :(
     inputs.rightAppliedVolts = rightLeader.getMotorOutputVoltage();
     inputs.rightCurrentAmps =
-        new double[] {rightLeader.getStatorCurrent(), rightFollower.getStatorCurrent()};
+        new double[] {rightLeader.getStatorCurrent()};
   }
 
   @Override
